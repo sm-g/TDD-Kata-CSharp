@@ -12,7 +12,7 @@ namespace TDDKata
         private static readonly string Comma = ",";
         private static readonly string NewLine = "\n";
 
-        public static object Add(string input)
+        public static int Add(string input)
         {
             var (separatedNumbers, delimiters) = ParseDelimiters(input);
 
@@ -54,5 +54,42 @@ namespace TDDKata
             // 1,2\n3
             return (input, new[] { Comma, NewLine });
         }
+    }
+
+    public class CalculatorService
+    {
+        private ILogger _logger;
+        private IWebService _webService;
+
+        public CalculatorService(ILogger logger = null, IWebService webService = null)
+        {
+            _logger = logger;
+            _webService = webService;
+        }
+
+        public int Add(string input)
+        {
+            var result = Calculator.Add(input);
+            try
+            {
+                _logger?.Write(result.ToString());
+            }
+            catch (Exception ex)
+            {
+                _webService?.Notify(ex.Message);
+            }
+            Console.WriteLine(result);
+            return result;
+        }
+    }
+
+    public interface ILogger
+    {
+        void Write(string value);
+    }
+
+    public interface IWebService
+    {
+        void Notify(string message);
     }
 }
