@@ -9,8 +9,8 @@ namespace TDDKata
     /// </summary>
     public class Calculator
     {
-        private const char Comma = ',';
-        private const char NewLine = '\n';
+        private static readonly string Comma = ",";
+        private static readonly string NewLine = "\n";
 
         public static object Add(string input)
         {
@@ -38,16 +38,21 @@ namespace TDDKata
         {
             if (input.StartsWith("//"))
             {
+                // //[delim1][delim2]\n1,2,3
                 if (input[2] == '[')
                 {
-                    // multi char delimiter
-                    var endOfDelimSequence = input.IndexOf("]\n");
-                    var delimiterSequence = input.Substring(3, endOfDelimSequence - 3);
-                    return (input.Substring(endOfDelimSequence + 2), new[] { delimiterSequence, NewLine.ToString() });
+                    var endOfDelimetersDescription = input.IndexOf("]\n");
+                    var delimitersDescription = input.Substring(3, endOfDelimetersDescription - 3);
+                    var delimiters = delimitersDescription.Split(new[] { "][" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    return (input.Substring(endOfDelimetersDescription + 2), delimiters.Concat(new[] { NewLine }).ToArray());
                 }
-                return (input.Substring(4), new[] { input[2].ToString(), NewLine.ToString() });
+
+                // //;\n1;2;3
+                return (input.Substring(4), new[] { input[2].ToString(), NewLine });
             }
-            return (input, new[] { Comma.ToString(), NewLine.ToString() });
+            // 1,2\n3
+            return (input, new[] { Comma, NewLine });
         }
     }
 }

@@ -75,10 +75,21 @@ namespace TDDKata
         }
 
         [TestCase("//[***]\n1***2***3", 6)]
-        [TestCase("//[]]]\n1]]2]]3", 6)]
-        [TestCase("//[]]]\n1]]2\n3", 6)]
-        [TestCase("//[*]\n1*2*3", 6)]
+        [TestCase("//[]]]\n1]]2]]4", 7)]
+        [TestCase("//[]]]\n1]]2\n5", 8)]
+        [TestCase("//[*]\n1*2*6", 9)]
         public void Add_WithMultiCharDelimeter_ShouldReturnSum(string unput, int expected)
+        {
+            var result = Calculator.Add(unput);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("//[*][%]\n1*2%3", 6)]
+        [TestCase("//[**][%]\n1**2%4", 7)]
+        [TestCase("//[**][,,,]\n1**2,,,5", 8)]
+        [TestCase("//[[]][,]\n1[]2,6", 9)]
+        [TestCase("//[]]][,]\n1]]2,7", 10)]
+        public void Add_WithMultipleDelimeters_ShouldReturnSum(string unput, int expected)
         {
             var result = Calculator.Add(unput);
             Assert.AreEqual(expected, result);
